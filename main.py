@@ -17,6 +17,7 @@ class Mass:
         self.pos = pos
         self.v = v
         self.attached = []
+        self.trajectory = []
 
 
 class Spring:
@@ -24,7 +25,7 @@ class Spring:
     Attributes:
     -l0: rest length
     -k: stiffness parameter
-    -c: connection points (array)"""
+    -c: connection points (list of Mass and/or Fixture objects)"""
 
     def __init__(self, l0, k, conn):
         self.l = l0
@@ -35,9 +36,10 @@ class Spring:
 
 
 class SpringMassSystem:
-    """Initialize the spring mass system"""
+    """Initialize the spring mass system.
+    Fixtures, masses, and springs must be provided as lists"""
 
-    def __init__(self, fixtures, masses, springs, timesteps = 2000, g = 9.81):
+    def __init__(self, fixtures, masses, springs, timesteps = 100, g = 9.81):
         self.fixtures = fixtures
         self.masses = masses
         self.springs = springs
@@ -48,31 +50,27 @@ class SpringMassSystem:
         self.f0 = [0 for m in self.masses]
         self.f1 = [(m.m * self.g) for m in self.masses]
         self.forces = [list(x) for x in zip(self.f0, self.f1)]
-
-        # For saving data
-        self.positions = []
-        for m in self.masses:
-            self.positions.append([])
-        self.velocities = []
-        for m in self.masses:
-            self.velocities.append([])
+        
         self.lengths = []
         for m in self.masses:
             self.lengths.append([])
 
     def run(self):
+        # Run simulation
+
+        # Create time steps
         self.times = np.linspace(0, 1, int(self.timesteps))
 
         for t in self.times:
-            pos, v, l = self.update()
-        self.save(pos, v, l)
-        print("Data saved.")
-        self.plot(pos, v, l)
-        print("Data plotted.")
+            self.update()
+        for m in self.masses:
+            print(f"Trajectory of mass: {m.trajectory}")
+        self.plot()
+        print("Plot finished")
 
     
     def update(self):
-        """"Update position and velocity of a mass,
+        """Update position and velocity of a mass,
         the force acting on it and the length of the springs"""
 
         # Update forces
@@ -87,11 +85,10 @@ class SpringMassSystem:
         print("Updating positions...")
         # Update positions
         for m in self.masses:
-            i = 0
             m.pos[0] += m.v[0] * self.delta_t
             m.pos[1] += m.v[1] * self.delta_t
-            self.positions[i].append(m.pos)
-            i = i + 1
+            m.trajectory.append(m.pos[:]) # Deep copy of pos
+            print(f"Added position: {m.trajectory[-1]}")
 
         print("Updating velocities...")
         # Update velocities
@@ -99,7 +96,6 @@ class SpringMassSystem:
             i = 0
             m.v[0] += self.forces[i][0] / m.m * self.delta_t
             m.v[1] += self.forces[i][1] / m.m * self.delta_t
-            self.velocities[i].append(m.v)
             i = i + 1
 
         print("Updating lengths...")
@@ -111,25 +107,15 @@ class SpringMassSystem:
             self.lengths[i].append(s.l)
             i = i + 1
 
-        return m.pos, m.v, s.l
-
     def save(self, pos, v, l):
         # Save to csv file
         pass
 
-    def plot(self, pos, v, l):
+    def plot(self):
         # Plot trajectories
-        plt.hist(pos)
+        # fig, ax = plt.subplots(figsize = (10, 6))
+        # plt.plot([x for x in range(10)])
+        # plt.show()
+        # ax.plot(self.masses[0].trajectory)
+        plt.scatter(x=[x[0] for x in self.masses[0].trajectory], y=[y[1] for y in self.masses[0].trajectory])
         plt.show()
-
-
-
-
-
-class Trajectory:
-    """Save positions of all masses and fixtures as well as the springs connecting them"""
-    def __init__(self, mass):
-        self.x = mass.pos[0]
-        self.y = mass.pos[1]
-
-
