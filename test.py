@@ -1,12 +1,33 @@
+from main import *
+
+
 def create_fixture():
-    pass
+    print("Creating fixtures...")
+    fix_1 = Fixture([5, 3])
+    fix_2 = Fixture([6, 4])
+    print("Fixtures created.")
 
 def create_mass():
-    pass
+    print("Creating masses...")
+    m_1 = Mass(5, [2, 3], [8, 5])
+    m_2 = Mass(3, [4, 3], [5, 6])
+    print("Masses created.")
+    return [m_1, m_2]
 
-def create_spring():
-    pass
+def create_spring(masses):
+    print("Creating springs...")
+    s_1 = Spring(2, 1000, masses)
+    print("Springs created.")
 
-def create_system():
-    pass
 
+def create_system(fixtures, masses, springs):
+    print("Creating spring mass system...")
+    sms_1 = SpringMassSystem(fixtures, masses, springs)
+    print("Spring mass system created.")
+
+
+
+f = create_fixture()
+m = create_mass()
+s = create_spring(m)
+sms = create_system(f, m, s)
