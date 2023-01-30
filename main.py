@@ -2,20 +2,24 @@ import numpy as np
 
 
 class Fixture:
-    def __init__(self, i_pos):
-        self.pos[0] = i_pos[0]
-        self.pos[1] = i_pos[1]
+    """Initialize a fixture"""
+
+    def __init__(self, pos):
+        self.pos[0] = pos[0]
+        self.pos[1] = pos[1]
 
 
 class Mass:
-    def __init__(self, i_m, i_pos, i_v):
-        self.m = i_m
-        self.pos = [i_pos[0], i_pos[1]]
-        self.v = [i_v[0], i_v[1]]
+    """Initialize a mass."""
+
+    def __init__(self, m, pos, v):
+        self.m = m
+        self.pos = pos
+        self.v = v
 
 
 class Spring:
-    """Creates a spring that connects a fixture and a mass, or two masses.
+    """Initialize a spring that connects a fixture and a mass, or two masses.
     Attributes:
     -rest length
     -stiffness parameter
