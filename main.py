@@ -99,7 +99,7 @@ class SpringMassSystem:
 
         # Plot fixtures
         for f in self.fixtures:
-            plt.scatter(x = f.pos[0], y = f.pos[1], s = 10)
+            plt.scatter(x = f.pos[0], y = f.pos[1], s = 100, marker = "H")
 
         # Plot trajectories
         for m in self.masses:
