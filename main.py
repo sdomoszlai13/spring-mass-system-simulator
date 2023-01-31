@@ -16,6 +16,7 @@ class Mass:
         self.m = m
         self.pos = pos
         self.v = v
+        self.f = [0, 0]
         self.attached = []
         self.trajectory = []
 
@@ -44,12 +45,13 @@ class SpringMassSystem:
         self.masses = masses
         self.springs = springs
         self.timesteps = timesteps
-        self.g = g
+        self.g = -g
         self.delta_t = 1 / self.timesteps
         # Create arrays for force
-        self.f0 = [0 for m in self.masses]
-        self.f1 = [(m.m * self.g) for m in self.masses]
-        self.forces = [list(x) for x in zip(self.f0, self.f1)]
+        # self.f0 = [0 for m in self.masses]
+        # self.f1 = [(m.m * self.g) for m in self.masses]
+        for m in self.masses:
+            m.f = [0, m.m * self.g]
         
         self.lengths = []
         for m in self.masses:
@@ -68,7 +70,7 @@ class SpringMassSystem:
         self.plot()
         print("Plot finished")
 
-    
+
     def update(self):
         """Update position and velocity of a mass,
         the force acting on it and the length of the springs"""
@@ -76,11 +78,11 @@ class SpringMassSystem:
         # Update forces
         print("Updating forces...")
         for m in self.masses:
-            i = 0
-            for elem in m.attached: # [other_mass, stiffness_constant, rest_length]
-                self.forces[i][0] += -elem[1] * (np.linalg.norm(elem[0].pos[0] - m.pos[0]) - elem[2])
-                self.forces[i][1] += -elem[1] * (np.linalg.norm(elem[0].pos[1] - m.pos[1]) - elem[2])
-            i = i + 1
+            for elem in m.attached: # elem = [other_mass_or_fixture, stiffness_constant, rest_length]
+                print(f"Element attached to current mass: {elem[0]}")
+                m.f[0] += -elem[1] * (np.linalg.norm(np.array(elem[0].pos) - np.array(m.pos)) - elem[2]) * ((m.pos[0] - elem[0].pos[0]) / (np.linalg.norm(np.array(elem[0].pos) - np.array(m.pos))))
+                m.f[1] += -elem[1] * (np.linalg.norm(np.array(elem[0].pos) - np.array(m.pos)) - elem[2]) * ((m.pos[1] - elem[0].pos[1]) / (np.linalg.norm(np.array(elem[0].pos) - np.array(m.pos)))) 
+                print(f"Force acting on m: {m.f}")
 
         print("Updating positions...")
         # Update positions
@@ -93,19 +95,19 @@ class SpringMassSystem:
         print("Updating velocities...")
         # Update velocities
         for m in self.masses:
-            i = 0
-            m.v[0] += self.forces[i][0] / m.m * self.delta_t
-            m.v[1] += self.forces[i][1] / m.m * self.delta_t
-            i = i + 1
+            m.v[0] += m.f[0] / m.m * self.delta_t
+            m.v[1] += m.f[1] / m.m * self.delta_t
 
         print("Updating lengths...")
         # Update lengths
+        """
         for s in self.springs:
             i = 0
             s.l = np.linalg.norm([s.conn[0].pos[0] - s.conn[1].pos[0],
             s.conn[0].pos[1] - s.conn[1].pos[1]])
             self.lengths[i].append(s.l)
             i = i + 1
+        """
 
     def save(self, pos, v, l):
         # Save to csv file
@@ -117,5 +119,7 @@ class SpringMassSystem:
         # plt.plot([x for x in range(10)])
         # plt.show()
         # ax.plot(self.masses[0].trajectory)
-        plt.scatter(x=[x[0] for x in self.masses[0].trajectory], y=[y[1] for y in self.masses[0].trajectory])
+        plt.scatter(x = [x[0] for x in self.masses[0].trajectory], y = [y[1] for y in self.masses[0].trajectory])
+        # plt.scatter(x=[x[0] for x in self.fixtures[0].pos], y=[y[1] for y in self.fixtures[0].pos])
+        plt.scatter(x = 4, y = 10)
         plt.show()

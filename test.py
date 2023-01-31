@@ -38,10 +38,10 @@ def create_mass():
     return [Mass(15, [2, 3], [0, 0])]
 
 def create_spring(f, m):
-    return [Spring(2, 5, [f[0], m[0]])]
+    return [Spring(2, 1000, [f[0], m[0]])]
 
 def create_system(f, m, s):
-    return [SpringMassSystem(f, m, s)]
+    return [SpringMassSystem(f, m, s, timesteps = 200)]
 
 
 f = create_fixture()
