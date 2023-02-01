@@ -16,7 +16,7 @@ class Mass:
         self.m = m
         self.pos = np.array(pos)
         self.v = np.array(v)
-        self.f = np.array([0, 0])
+        self.f = np.array([0.0, 0.0])
         self.attached = np.array([])
         self.trajectory = np.array([pos])
 
@@ -68,7 +68,7 @@ class SpringMassSystem:
         for m in self.masses:
             m.pos[0] += m.v[0] * self.delta_t
             m.pos[1] += m.v[1] * self.delta_t
-            m.trajectory = np.concatenate((m.trajectory, np.array([m.pos[:]]))) # Deep copy of pos
+            m.trajectory = np.concatenate((m.trajectory, np.array([m.pos])[:])) # Deep copy of pos
             print(f"Added to trajectory: {m.pos}")
 
         # Update velocities
@@ -127,19 +127,22 @@ class SpringMassSystem:
         
         self.trajectories = np.zeros((self.timesteps, 2, len(self.masses)))
 
-        print(f" Mass trajectory: {self.masses[0].trajectory}")
+
         for t in range(len(self.times)):
             for m in self.masses:
                 self.trajectories[t][0] = m.trajectory.T[0][t]
                 self.trajectories[t][1] = m.trajectory.T[1][t]
 
-        #for m in self.masses:
-        #    np.concatenate(self.trajectories, [[x[0].trajectory[0] for x in self.masses], [y[1] for y in self.masses[0].trajectory]])
-        
-        plt.scatter(self.trajectories[0], self.trajectories[1])
+        print("Begin plot")
+        for f in self.fixtures:
+            plt.scatter(f.pos[0], f.pos[1], c = "green")
+        for t in range(self.timesteps):
+            plt.scatter(self.trajectories[t][0], self.trajectories[t][1], c = "blue", s = 0.2)
+        print("Plot finished")
         # animator = Animator(sms = self, draw_trace=True)
         # animator.animate()
         plt.show()
+        
 
 
 class Animator:

@@ -32,16 +32,16 @@ def create_system(fixtures, masses, springs):
 """
 
 def create_fixture():
-    return np.array([Fixture([0, 10])])
+    return np.array([Fixture([0.0, 10.0])])
 
 def create_mass():
-    return np.array([Mass(1, [-3, 3], [0, 0])])
+    return np.array([Mass(1, [-3.0, 3.0], [0.0, 0.0])])
 
 def create_spring(f, m):
-    return np.array([Spring(7.615, 1000, [f[0], m[0]])])
+    return np.array([Spring(7.615, 1000.0, [f[0], m[0]])])
 
 def create_system(f, m, s):
-    return np.array([SpringMassSystem(f, m, s, time = 10, timesteps = 3000)])
+    return np.array([SpringMassSystem(f, m, s, time = 3, timesteps = 3000)])
 
 
 f = create_fixture()
