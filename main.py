@@ -170,6 +170,7 @@ class Animator:
         self.time = sms.time
         self.delta_t = self.time / self.timesteps
         self.trajectories = sms.trajectories
+        self.pause = 1000
 
         # Create canvas
         self.fig = plt.figure()
@@ -194,13 +195,14 @@ class Animator:
         t = 0.1 * i
 
         # Update arrays for line to plot
-        xdata = self.trajectories[:(i+1)][0]
-        ydata = self.trajectories[:(i+1)][1]
+        for coords in self.trajectories[i]:
+            self.xdata.append(coords[0])
+            self.ydata.append(coords[1])
 
-        self.line.set_data(xdata, ydata)
+        self.line.set_data(self.xdata, self.ydata)
         
         return self.line,
 
     def animate(self):  
-        anim = animation.FuncAnimation(self.fig, self.update, frames = self.timesteps, interval = 20, blit = True)
+        anim = animation.FuncAnimation(self.fig, self.update, frames = self.timesteps, interval = self.pause, blit = True)
         plt.show()
