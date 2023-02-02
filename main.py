@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 class Fixture:
     """Initialize a fixture"""
@@ -138,12 +139,68 @@ class SpringMassSystem:
             y_coords = [m.trajectory[t][1] for m in self.masses]
             self.trajectories.append([x_coords, y_coords])
 
+        a = Animator(self)
+        a.animate()
+
+        """
         print("Begin plot")
         for f in self.fixtures:
             plt.scatter(f.pos[0], f.pos[1], c = "green")
         for t in range(self.timesteps):
             plt.scatter(self.trajectories[t][0], self.trajectories[t][1], c = "blue", s = 0.2)
         print("Plot finished")
+        """
+
+        # print("Beginning plot")
         # animator = Animator(sms = self, draw_trace = True)
         # animator.animate()
+        # plt.show()
+        # print("Plot finished")
+
+
+# -----------------------------------------------
+
+class Animator:
+
+    def __init__(self, sms):
+        self.fixtures = sms.fixtures
+        self.masses = sms.masses
+        self.springs = sms.springs
+        self.timesteps = sms.timesteps
+        self.time = sms.time
+        self.delta_t = self.time / self.timesteps
+        self.trajectories = sms.trajectories
+
+        # Create canvas
+        self.fig = plt.figure()
+        self.axis = plt.axes(xlim =(-50, 50), ylim =(-50, 50))
+
+        self.line, = self.axis.plot([], [], lw = 2)
+
+        # Initialize coordinate arrays
+        self.xdata = []
+        self.ydata = []
+
+        # Set data for line on canvas
+        # def init():
+        self.line.set_data([], [])
+        # return self.line,
+
+
+
+    # Called every time step
+    def update(self, i):
+        # Parameter for speed setting
+        t = 0.1 * i
+
+        # Update arrays for line to plot
+        xdata = self.trajectories[:(i+1)][0]
+        ydata = self.trajectories[:(i+1)][1]
+
+        self.line.set_data(xdata, ydata)
+        
+        return self.line,
+
+    def animate(self):  
+        anim = animation.FuncAnimation(self.fig, self.update, frames = self.timesteps, interval = 20, blit = True)
         plt.show()
