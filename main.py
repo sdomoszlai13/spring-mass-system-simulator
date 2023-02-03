@@ -2,6 +2,58 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+
+"""
+ Spring Mass System Simulator
+
+ Simulates a system of connected springs, masses and fixtures.
+ The trajectory of the masses can be plotted and saved in a text file.
+
+"""
+
+# Input funcionality
+
+
+
+def smsInit():
+    """User interface for data input"""
+
+    print("To simulate a spring mass system, pass arrays of fixtures, masses, and springs.")
+    num_masses = input("Enter the number of masses you wish to simulate: ")
+    print("The input format for the properties of masses is: [m, [x0, y0], [vx0, vy0]].")
+    print("m: mass")
+    print("x0, y0: initial position of mass")
+    print("vx0, vy0: initial velocity of mass")
+
+
+    # Get information for fixture(s)
+
+
+    # Create Fixture object(s)
+    fixtures = []
+
+
+    # Get information for mass(es)
+    mass_data = []
+    for i in num_masses:
+        mass_data.append(input(f"Enter the desired properties of mass {i}:"))
+    
+    # Create Mass object(s)
+    masses = []
+    for m_data in mass_data:
+        masses.append([Mass(m_data)])
+
+
+    # Get information for spring(s)
+
+
+    # Create Spring object(s)
+    springs = []
+
+    
+    return fixtures, masses, springs
+
+
 class Fixture:
     """Initialize a fixture.
     Attributes:
@@ -247,3 +299,9 @@ class Animator:
     def animate(self):  
         anim = animation.FuncAnimation(self.fig, self.update, frames = self.timesteps, interval = self.pause, blit = True)
         plt.show()
+
+"""
+# Create SpringMassSystem object based on user input and run simulation
+sms = SpringMassSystem(smsInit())
+sms.run()
+"""
