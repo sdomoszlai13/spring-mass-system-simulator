@@ -3,22 +3,40 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 class Fixture:
-    """Initialize a fixture"""
+    """Initialize a fixture.
+    Attributes:
+    -pos: position
+    -attached: attached objects (mass(es) and/or spring(s))
+    
+    Position must be provided as a list"""
 
     def __init__(self, pos):
         self.pos = pos
-        self.attached = [] # Other mass/fixture, spring constant, rest length
+        self.attached = [] # List format: [mass/fixture connected to this fixture,
+                           #               spring constant of connecting spring,
+                           #               rest length of connecting spring]
 
 
 class Mass:
-    """Initialize a mass"""
+    """Initialize a mass.
+    Attributes:
+    -m: mass
+    -pos: position
+    -v: velocity
+    -f: acting force
+    -attached: attached objects (mass(es) and/or spring(s))
+    -trajectory: trajectory
+    
+    Position and velocity must be provided as a list"""
 
     def __init__(self, m, pos, v):
         self.m = m
         self.pos = pos
         self.v = v
         self.f = []
-        self.attached = []
+        self.attached = [] # List format: [mass/fixture connected to this fixture,
+                           #               spring constant of connecting spring,
+                           #               rest length of connecting spring]
         self.trajectory = [pos]
 
 
@@ -26,8 +44,10 @@ class Spring:
     """Initialize a spring that connects a fixture and a mass, or two masses.
     Attributes:
     -l0: rest length
-    -k: stiffness parameter
-    -c: connection points (list of Mass and/or Fixture objects)"""
+    -k: spring constant
+    -conn: objects that the spring connects (list of mass(es) and/or fixture(s))
+    
+    Connecting mass(es) and/or fixture(s) must be provided as a list"""
 
     def __init__(self, l0, k, conn):
         self.l = l0
@@ -41,9 +61,17 @@ class Spring:
 
 class SpringMassSystem:
     """Initialize the spring mass system.
+    Attributes with similar names as in Mass and Fixture class
+    are defined identical.
+    Additional attributes:
+    -time: length of time interval to be simulated
+    -timesteps: number of intervals time is to be divided into
+    -g: gravitational acceleration
+    -save: control of function save() that saves trajectories in a file
+
     Fixtures, masses, and springs must be provided as lists"""
 
-    def __init__(self, fixtures, masses, springs, time = 1, timesteps = 100, g = 9.81):
+    def __init__(self, fixtures, masses, springs, time = 1, timesteps = 100, g = 9.81, save = False):
         self.fixtures = fixtures
         self.masses = masses
         self.springs = springs
@@ -52,19 +80,20 @@ class SpringMassSystem:
         self.time = time
         self.delta_t = time / timesteps
         self.trajectories = []
+        self.save_csv = save
 
         for m in self.masses:
             m.f = [0, m.m * self.g]
 
 
     def update(self):
-        """Update position and velocity of a mass,
-        the force acting on it and the length of the springs"""
+        """Update positions and velocities of the masses, and
+        the force acting on them"""
 
         # Update forces
         for m in self.masses:
             m.f = [0, 0]
-            for elem in m.attached: # elem = [other_mass_or_fixture, stiffness_constant, rest_length]
+            for elem in m.attached: # elem = [other_mass_or_fixture, spring_constant, rest_length]
                 m.f[0] += -elem[1] * (np.linalg.norm(np.array(elem[0].pos) - np.array(m.pos)) - elem[2]) * ((np.array(m.pos[0]) - np.array(elem[0].pos[0])) / (np.linalg.norm(np.array(elem[0].pos) - np.array(m.pos))))
                 m.f[1] += -elem[1] * (np.linalg.norm(np.array(elem[0].pos) - np.array(m.pos)) - elem[2]) * ((np.array(m.pos[1]) - np.array(elem[0].pos[1])) / (np.linalg.norm(np.array(elem[0].pos) - np.array(m.pos)))) + m.m * self.g
 
@@ -81,9 +110,13 @@ class SpringMassSystem:
             m.v[1] += m.f[1] / m.m * self.delta_t
 
 
-    def save(self, pos, v, l):
-        # Save to csv file
-        pass
+    def save(self):
+        # Save trajectories to csv file
+
+        f = open("trajectories", "w")
+        f.write(f"{self.trajectories};")
+        f.close()
+
 
     def plot(self):
         # Plot trajectories
@@ -136,6 +169,10 @@ class SpringMassSystem:
             x_coords = [m.trajectory[t][0] for m in self.masses]
             y_coords = [m.trajectory[t][1] for m in self.masses]
             self.trajectories.append([x_coords, y_coords])
+
+        if self.save_csv == True:
+            self.save()
+            print(f"Saved trajectories to \"trajectories\"")
 
         # a = Animator(self)
         # a.animate()
