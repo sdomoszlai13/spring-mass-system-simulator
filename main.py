@@ -51,7 +51,7 @@ class SpringMassSystem:
         self.timesteps = timesteps
         self.time = time
         self.delta_t = time / timesteps
-        self.trajectories = [[[0, 4], [3, 8]]]
+        self.trajectories = []
 
         for m in self.masses:
             m.f = [0, m.m * self.g]
@@ -122,7 +122,7 @@ class SpringMassSystem:
         # Create time steps
         self.times = np.linspace(0, 1, self.timesteps)
 
-        # Update forces, positions and velocities. Creates m.trajectory array for each m
+        # Update forces, positions and velocities. Create m.trajectory array for each m
         for t in self.times:
             self.update()
 
@@ -131,8 +131,6 @@ class SpringMassSystem:
         
         # self.trajectories = [self.timesteps, 2, len(self.masses)]
         self.trajectories = []
-
-
 
         for t in range(len(self.times)):
             x_coords = [m.trajectory[t][0] for m in self.masses]
@@ -151,13 +149,6 @@ class SpringMassSystem:
         print("Plot finished")
         """
 
-        # print("Beginning plot")
-        # animator = Animator(sms = self, draw_trace = True)
-        # animator.animate()
-        # plt.show()
-        # print("Plot finished")
-
-
 # -----------------------------------------------
 
 class Animator:
@@ -170,13 +161,14 @@ class Animator:
         self.time = sms.time
         self.delta_t = self.time / self.timesteps
         self.trajectories = sms.trajectories
-        self.pause = 1000
+        self.pause = 10
+        self.j = 0
 
         # Create canvas
         self.fig = plt.figure()
         self.axis = plt.axes(xlim =(-50, 50), ylim =(-50, 50))
 
-        self.line, = self.axis.plot([], [], lw = 2)
+        self.line, = self.axis.plot([], [], "bo")
 
         # Initialize coordinate arrays
         self.xdata = []
@@ -200,7 +192,10 @@ class Animator:
             self.ydata.append(coords[1])
 
         self.line.set_data(self.xdata, self.ydata)
-        
+        print(f"i: {i}")
+        print("Data to plot:")
+        print(f"xdata: {self.xdata}")
+        print(f"ydata: {self.ydata}")
         return self.line,
 
     def animate(self):  
