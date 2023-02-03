@@ -73,7 +73,7 @@ class SpringMassSystem:
             m.pos[0] += m.v[0] * self.delta_t
             m.pos[1] += m.v[1] * self.delta_t
             m.trajectory.append(m.pos[:]) # Deep copy of pos
-            print(f"Added to trajectory: {m.pos}")
+            # print(f"Added to trajectory: {m.pos}")
 
         # Update velocities
         for m in self.masses:
@@ -137,17 +137,18 @@ class SpringMassSystem:
             y_coords = [m.trajectory[t][1] for m in self.masses]
             self.trajectories.append([x_coords, y_coords])
 
-        a = Animator(self)
-        a.animate()
+        # a = Animator(self)
+        # a.animate()
 
-        """
+        
         print("Begin plot")
         for f in self.fixtures:
-            plt.scatter(f.pos[0], f.pos[1], c = "green")
-        for t in range(self.timesteps):
-            plt.scatter(self.trajectories[t][0], self.trajectories[t][1], c = "blue", s = 0.2)
+            plt.scatter(f.pos[0], f.pos[1], c = "green", s = 80, marker = "H")
+        for t in range(int(self.timesteps / 20)):
+            if self.timesteps % 10 == 0: 
+                plt.scatter(self.trajectories[20 * t][0], self.trajectories[10 * t][1], c = "blue", s = 0.2)
+        plt.show()
         print("Plot finished")
-        """
 
 # -----------------------------------------------
 
@@ -161,8 +162,13 @@ class Animator:
         self.time = sms.time
         self.delta_t = self.time / self.timesteps
         self.trajectories = sms.trajectories
-        self.pause = 10
+        self.pause = 1
         self.j = 0
+
+        f = open("trajectories", "w")
+        for line in self.trajectories:
+            f.write(f"{line}\n")
+        f.close()
 
         # Create canvas
         self.fig = plt.figure()
@@ -192,10 +198,13 @@ class Animator:
             self.ydata.append(coords[1])
 
         self.line.set_data(self.xdata, self.ydata)
-        print(f"i: {i}")
-        print("Data to plot:")
-        print(f"xdata: {self.xdata}")
-        print(f"ydata: {self.ydata}")
+        # print(f"i: {i}")
+        # print("Data to plot:")
+        # print(f"xdata: {self.xdata}")
+        # print(f"ydata: {self.ydata}")
+        if i == 11999:
+            f = open("xdata_ydata", "w")
+            f.write(f"xdata and ydata at i = {i}: \n {self.xdata} \n {self.ydata}")
         return self.line,
 
     def animate(self):  
