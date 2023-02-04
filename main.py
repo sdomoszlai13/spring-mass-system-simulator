@@ -198,7 +198,12 @@ class SpringMassSystem:
             m.v[1] += m.f[1] / m.m * self.delta_t
 
 
-
+    def energyCheck(self):
+        # Calculate total energy at the beginning and at the end
+        # of the process and compare the values. Ideally, the two
+        # values should be equal
+        # TO DO
+        pass
 
 
     def save(self):
@@ -260,6 +265,10 @@ class SpringMassSystem:
             x_coords = [m.trajectory[t][0] for m in self.masses]
             y_coords = [m.trajectory[t][1] for m in self.masses]
             self.trajectories.append([x_coords, y_coords])
+
+
+        # Check plausibility of results
+        self.energyCheck()
 
         if self.save_csv == True:
             self.save()
