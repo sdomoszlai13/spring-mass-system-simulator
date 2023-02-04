@@ -8,12 +8,10 @@ import matplotlib.animation as animation
 
  Simulates a system of connected springs, masses and fixtures.
  The trajectory of the masses can be plotted and saved in a text file.
-
 """
 
+
 # Input funcionality
-
-
 
 def smsInit():
     """User interface for data input"""
@@ -27,10 +25,14 @@ def smsInit():
 
 
     # Get information for fixture(s)
-
+    fixture_data = []
+    for i in num_fixtures:
+        fixture_data.append(input(f"Enter the desired properties of fixture {i}:"))
 
     # Create Fixture object(s)
     fixtures = []
+    for f_data in fixture_data:
+        fixtures.append([Fixture(f_data)])
 
 
     # Get information for mass(es)
@@ -45,10 +47,14 @@ def smsInit():
 
 
     # Get information for spring(s)
-
+    spring_data = []
+    for i in num_springs:
+        spring_data.append(input(f"Enter the desired properties of spring {i}:"))
 
     # Create Spring object(s)
     springs = []
+    for s_data in spring_data:
+        springs.append([Spring(s_data)])
 
     
     return fixtures, masses, springs
