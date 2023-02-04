@@ -16,47 +16,79 @@ import matplotlib.animation as animation
 def smsInit():
     """User interface for data input"""
 
-    print("To simulate a spring mass system, pass arrays of fixtures, masses, and springs.")
+    print("To simulate a spring mass system, pass arrays of fixtures, masses, and springs. \n\n")
+
+    # Get information for fixture(s)
+    num_fixtures = input("Enter the number of fixtures you wish to simulate: ")
+    print("The input format for the properties of fixtures is: [x0, y0].")
+    print("x0, y0: position of fixture")
+
+    fixtures = []
+
+    for i in num_fixtures:
+        x = input(f"Enter x coordinate of fixture {i}: ")
+        y = input(f"Enter y coordinate of fixture {i}: ")
+        fixtures.append(Fixture(x, y))
+
+
+    # Get information for mass(es)
     num_masses = input("Enter the number of masses you wish to simulate: ")
-    print("The input format for the properties of masses is: [m, [x0, y0], [vx0, vy0]].")
+    print("The input format for the properties of masses is: m, [x0, y0], [vx0, vy0].")
     print("m: mass")
     print("x0, y0: initial position of mass")
     print("vx0, vy0: initial velocity of mass")
 
-
-    # Get information for fixture(s)
-    fixture_data = []
-    for i in num_fixtures:
-        fixture_data.append(input(f"Enter the desired properties of fixture {i}:"))
-
-    # Create Fixture object(s)
-    fixtures = []
-    for f_data in fixture_data:
-        fixtures.append([Fixture(f_data)])
-
-
-    # Get information for mass(es)
-    mass_data = []
-    for i in num_masses:
-        mass_data.append(input(f"Enter the desired properties of mass {i}:"))
-    
-    # Create Mass object(s)
     masses = []
-    for m_data in mass_data:
-        masses.append([Mass(m_data)])
+
+    for i in num_masses:
+        m = input(f"Enter mass of mass {i}: ")
+        x0 = input(f"Enter x coordinate of initial position of mass {i}: ")
+        y0 = input(f"Enter y coordinate of initial position of mass {i}: ")
+        vx0 = input(f"Enter x component of initial velocity of mass {i}: ")
+        vy0 = input(f"Enter y component of initial velocity of mass {i}: ")
+        masses.append(Mass(m, x0, y0, vx0, vy0))
 
 
     # Get information for spring(s)
-    spring_data = []
-    for i in num_springs:
-        spring_data.append(input(f"Enter the desired properties of spring {i}:"))
+    num_springs = input("Enter the number of springs you wish to simulate: ")
+    print("The input format for the properties of springs is: l0, k, conn.")
+    print("l0: rest length")
+    print("k: spring constant")
+    print("conn: connected fixture(s) and/or mass(es) in an array")
 
-    # Create Spring object(s)
     springs = []
-    for s_data in spring_data:
-        springs.append([Spring(s_data)])
 
-    
+    for i in num_springs:
+        l0 = input(f"Enter rest length of spring {i}: ")
+        k = input(f"Enter spring constant of spring {i}: ")
+        obj1_name = input(f"Enter name of first connected fixture/mass: ")
+
+        if obj1_name[0] == "f":
+            obj1 = fixtures[int(obj1_name[1])]
+
+        elif obj1_name[0] == "m":
+            obj1 = masses[int(obj1_name[1])]
+
+        else:
+            # Throw exception - TO DO
+            pass
+
+
+        obj2_name = input(f"Enter name of second connected fixture/mass: ")
+
+        if obj2_name[0] == "f":
+            obj2 = fixtures[int(obj2_name[1])]
+
+        elif obj2_name[0] == "m":
+            obj2 = masses[int(obj2_name[1])]
+
+        else:
+            # Throw exception - TO DO
+            pass
+
+        springs.append(Spring(l0, k, [obj1, obj2]))
+
+
     return fixtures, masses, springs
 
 
@@ -64,12 +96,10 @@ class Fixture:
     """Initialize a fixture.
     Attributes:
     -pos: position
-    -attached: attached objects (mass(es) and/or spring(s))
-    
-    Position must be provided as a list"""
+    -attached: attached objects (mass(es) and/or spring(s))"""
 
-    def __init__(self, pos):
-        self.pos = pos
+    def __init__(self, x, y):
+        self.pos = [x, y]
         self.attached = [] # List format: [mass/fixture connected to this fixture,
                            #               spring constant of connecting spring,
                            #               rest length of connecting spring]
@@ -87,15 +117,15 @@ class Mass:
     
     Position and velocity must be provided as a list"""
 
-    def __init__(self, m, pos, v):
+    def __init__(self, m, x0, y0, vx0, vy0):
         self.m = m
-        self.pos = pos
-        self.v = v
+        self.pos = [x0, y0]
+        self.v = [vx0, vy0]
         self.f = []
         self.attached = [] # List format: [mass/fixture connected to this fixture,
                            #               spring constant of connecting spring,
                            #               rest length of connecting spring]
-        self.trajectory = [pos]
+        self.trajectory = [self.pos]
 
 
 class Spring:
@@ -166,6 +196,9 @@ class SpringMassSystem:
         for m in self.masses:
             m.v[0] += m.f[0] / m.m * self.delta_t
             m.v[1] += m.f[1] / m.m * self.delta_t
+
+
+
 
 
     def save(self):
@@ -306,8 +339,7 @@ class Animator:
         anim = animation.FuncAnimation(self.fig, self.update, frames = self.timesteps, interval = self.pause, blit = True)
         plt.show()
 
-"""
+
 # Create SpringMassSystem object based on user input and run simulation
 sms = SpringMassSystem(smsInit())
 sms.run()
-"""
