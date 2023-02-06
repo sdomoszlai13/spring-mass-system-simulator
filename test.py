@@ -1,5 +1,6 @@
 from main import *
 
+"""Create a double pendulum as a test the fast and easy way"""
 
 def create_fixture(x, y):
     return Fixture(x, y)
@@ -11,7 +12,7 @@ def create_spring(l0, k, conn):
     return [Spring(l0, k, conn)]
 
 def create_system(f, m, s):
-    return [SpringMassSystem(f, m, s, time = 3, timesteps = 12000, save = True)]
+    return [SpringMassSystem(f, m, s, time = 3, timesteps = 12000, save = False)]
 
 
 f = create_fixture(0.0, 10.0)
