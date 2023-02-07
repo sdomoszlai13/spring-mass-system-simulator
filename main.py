@@ -12,10 +12,12 @@ import matplotlib.animation as animation
 
 
 class Fixture:
-    """Initialize a fixture.
+    """
+    Initialize a fixture.
     Attributes:
     -pos: position
-    -attached: attached objects (mass(es) and/or spring(s))"""
+    -attached: attached objects (mass(es) and/or spring(s))
+    """
 
     def __init__(self, x, y):
         self.pos = [x, y]
@@ -25,7 +27,8 @@ class Fixture:
 
 
 class Mass:
-    """Initialize a mass.
+    """
+    Initialize a mass.
     Attributes:
     -m: mass
     -pos: position
@@ -34,7 +37,8 @@ class Mass:
     -attached: attached objects (mass(es) and/or spring(s))
     -trajectory: trajectory
     
-    Position and velocity must be provided as a list"""
+    Position and velocity must be provided as a list
+    """
 
     def __init__(self, m, x0, y0, vx0, vy0):
         self.m = m
@@ -48,13 +52,15 @@ class Mass:
 
 
 class Spring:
-    """Initialize a spring that connects a fixture and a mass, or two masses.
+    """
+    Initialize a spring that connects a fixture and a mass, or two masses.
     Attributes:
     -l0: rest length
     -k: spring constant
     -conn: objects that the spring connects (list of mass(es) and/or fixture(s))
     
-    Connecting mass(es) and/or fixture(s) must be provided as a list"""
+    Connecting mass(es) and/or fixture(s) must be provided as a list
+    """
 
     def __init__(self, l0, k, conn):
         self.l0 = l0
@@ -67,7 +73,8 @@ class Spring:
 
 
 class SpringMassSystem:
-    """Initialize the spring mass system.
+    """
+    Initialize the spring mass system.
     Attributes with similar names as in Mass and Fixture class
     are defined identical.
     Additional attributes:
@@ -76,9 +83,10 @@ class SpringMassSystem:
     -g: gravitational acceleration
     -save: control of function save() that saves trajectories in a file
 
-    Fixtures, masses, and springs must be provided as lists"""
+    Fixtures, masses, and springs must be provided as lists
+    """
 
-    def __init__(self, fixtures, masses, springs, time = 1, timesteps = 100, g = 9.81, save = True):
+    def __init__(self, fixtures, masses, springs, time = 1, timesteps = 100, save = False, g = 9.81):
         self.fixtures = fixtures
         self.masses = masses
         self.springs = springs
@@ -88,14 +96,18 @@ class SpringMassSystem:
         self.delta_t = time / timesteps
         self.trajectories = []
         self.save_csv = save
+        self.E_i = 0
+        self.E_f = 0
 
         for m in self.masses:
             m.f = [0, m.m * self.g]
 
 
     def update(self):
-        """Update positions and velocities of the masses, and
-        the force acting on them"""
+        """
+        Update positions and velocities of the masses, and
+        the force acting on them
+        """
 
         # Update forces
         for m in self.masses:
@@ -117,16 +129,39 @@ class SpringMassSystem:
             m.v[1] += m.f[1] / m.m * self.delta_t
 
 
+    def energy(self, t):
+        """
+        Calculate total energy of the system at a given point in time
+        """
+
+        E = 0
+
+        # Calculate energy of masses
+        for m in self.masses:
+            E += m.m * m.trajectory[t][1] * self.g + m.m * (m.v[0] ** 2 + m.v[1] ** 2) / 2
+
+        # Calculate energy of springs
+        for s in self.springs:
+            E += s[0].k * (np.linalg.norm(np.array(s[0].conn[0].pos) - np.array(s[0].conn[1].pos)) - s[0].l0)
+        
+        return E
+
+    
     def energyCheck(self):
-        # Calculate total energy at the beginning and at the end
-        # of the process and compare the values. Ideally, the two
-        # values should be equal
-        # TO DO
-        pass
+        """
+        Perform plausibility check by calculating deviation of the final total energy
+        from the initial total energy
+        """
+
+        print("--- ENERGY CHECK ---")
+        self.E_div = (self.E_f - self.E_i) / self.E_i
+        print(f"Deviation from initial total energy: {self.E_div * 100:.2f}%")
 
 
     def save(self):
-        # Save trajectories to csv file
+        """
+        Save trajectories to txt file
+        """
 
         f = open("trajectories", "w")
         f.write(f"{self.trajectories};")
@@ -134,16 +169,22 @@ class SpringMassSystem:
 
 
     def plot(self):
+        """
+        Plot trajectories of masses
+        """
         # Plot trajectories
         # fig, ax = plt.subplots(figsize = (10, 6))
         # plt.plot([x for x in range(10)])
         # plt.show()
         # ax.plot(self.masses[0].trajectory)
 
+        """
         # Plot fixtures
+        print("Begin second plot")
+
         for f in self.fixtures:
             plt.scatter(x = f.pos[0], y = f.pos[1], s = 100, marker = "H")
-        """
+        
         # Plot trajectories
         for t_i in range(len(self.times)):
             #print(f"Plotting point {t_i}...")
@@ -162,13 +203,44 @@ class SpringMassSystem:
             plt.scatter(x = m.trajectory[-1][0], y = m.trajectory[-1][1], c = "red")
         
         plt.show()
+
+        print("Second plot finished")
         """
 
+        # Plot trajectories
+        print("Begin plot")
+        for f in self.fixtures:
+            plt.scatter(f.pos[0], f.pos[1], c = "green", s = 100, marker = "H")
+        for t in range(int(self.timesteps / 20)):
+            if self.timesteps % 10 == 0: 
+                plt.scatter(self.trajectories[20 * t][0], self.trajectories[10 * t][1], c = "blue", s = 0.2)
+        
+        # First relevant dot in green
+        for m in self.masses:
+            plt.scatter(x = m.trajectory[1][0], y = m.trajectory[1][1], c = "green")
+
+        # Spring and mass at initial position - TO DO
+
+        """
+        # Last relevant dot in red
+        for m in self.masses:
+           plt.scatter(x = m.trajectory[-1][0], y = m.trajectory[-1][1], c = "red")
+        """
+        
+        plt.show()
+        print("Plot finished")
+
+        
+        
+
     def run(self):
-        """Runs the simulation"""
+        """Run the simulation"""
 
         # Create time steps
         self.times = np.linspace(0, 1, self.timesteps)
+
+        # Calculate initial energy of the system
+        self.E_i = self.energy(0)
 
         # Update forces, positions and velocities. Create m.trajectory array for each m
         for t in self.times:
@@ -185,28 +257,31 @@ class SpringMassSystem:
             y_coords = [m.trajectory[t][1] for m in self.masses]
             self.trajectories.append([x_coords, y_coords])
 
+        # Calculate final energy of the system
+        self.E_f = self.energy(self.timesteps)
 
         # Check plausibility of results
         self.energyCheck()
 
+
+        # Save to file if user wishes
         if self.save_csv == True:
             self.save()
-            print(f"Saved trajectories to \"trajectories\"")
+            print(f"Saved trajectories to \"trajectories.txt\"")
+        
+        # Plot trajectories
+        self.plot()
 
+        # Start animation
         # a = Animator(self)
         # a.animate()
 
         
-        print("Begin plot")
-        for f in self.fixtures:
-            plt.scatter(f.pos[0], f.pos[1], c = "green", s = 80, marker = "H")
-        for t in range(int(self.timesteps / 20)):
-            if self.timesteps % 10 == 0: 
-                plt.scatter(self.trajectories[20 * t][0], self.trajectories[10 * t][1], c = "blue", s = 0.2)
-        plt.show()
-        print("Plot finished")
+        
 
 # -----------------------------------------------
+
+# Not used currently
 
 class Animator:
 
