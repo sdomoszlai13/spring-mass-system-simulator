@@ -9,7 +9,7 @@ As of today, you can do the following in the program:
 
 * set up an arbitrary number of fixtures, masses and springs
 * run the simulation for a desired time with a desired number of time steps (temporary resolution)
-* perform a plausibility check by looking at the conservation of energy
+* perform a plausibility check by looking at the conservation of energy (known bug: sometimes wrong final point in trajectory and therefore wrong final energy)
 * plot the trajectories of the masses
 * save the trajectories of the masses in a text file
 
