@@ -219,7 +219,32 @@ class SpringMassSystem:
         for m in self.masses:
             plt.scatter(x = m.trajectory[1][0], y = m.trajectory[1][1], c = "green")
 
-        # Spring and mass at initial position - TO DO
+        # Spring and mass at initial position
+        for s in self.springs:
+            # Helix radius
+            r = 0.2
+            # Number of turns
+            n = 25
+            # Number of data points for the helix
+            N = 1000
+            # Padding for starting point and end point
+            pad1, pad2 = 100, 100
+            # Calculate initial length of spring to be plotted
+            l = np.linalg.norm(np.array(s[0].conn[0].pos) - np.array(s[0].conn[1].pos))
+            # Calculate translation vector of spring
+            T = 0 # TO DO
+            # Calculate rotation angle of spring
+            theta = 0 # TO DO
+            w = np.linspace(0, l, N)
+            # Set up helix
+            helix = np.zeros(N)
+            helix[pad1:-pad2] = r * np.sin(2 * np.pi * n * w[pad1:-pad2] / l)
+            # Translate the helix
+            helix += T
+            # Rotate the helix
+            R = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+            x, y = - R @ np.vstack((helix, w))
+            plt.scatter(x, y, c = "k", s = 0.4)
 
         """
         # Last relevant dot in red
