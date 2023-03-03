@@ -6,6 +6,12 @@ When the fixtures, masses and spings are set up, the forces acting on the masses
 
 The calculations are based on an Euler method. This is one of the simplest method to solve differential equations numerically. This project shows how much can be achieved even with a simple numerical method.
 
+The repository consists of 3 .py files:
+
+* **main.py**: contains classes and functions for solving the equations of motion
+* **test.py**: contains functions to create spring mass systems quickly
+* **user_input.py**: contains functions for a simple CLI to create a spring mass system
+
 **V1.0:**
 As of today, you can do the following in the program:
 
