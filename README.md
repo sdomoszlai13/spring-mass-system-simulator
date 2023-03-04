@@ -6,6 +6,8 @@ When the fixtures, masses and spings are set up, the forces acting on the masses
 
 The calculations are based on an Euler method. This is one of the simplest method to solve differential equations numerically. This project shows how much can be achieved even with a simple numerical method.
 
+The images below show the results of some test cases.
+
 The repository consists of 3 .py files:
 
 * **main.py**: contains classes and functions for solving the equations of motion
