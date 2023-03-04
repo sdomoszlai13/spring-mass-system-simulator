@@ -14,6 +14,12 @@ The repository consists of 3 .py files:
 * **test.py**: contains functions to create spring mass systems quickly
 * **user_input.py**: contains functions for a simple CLI to create a spring mass system
 
+To setup a system of springs and masses, run user_input.py and follow the prompts. The SI unit system is used in this simulation.
+Note: if the time steps are too large, the simulation will become unstable and large errors will occur in the calculations. To prevent this, it is recommended to chosse at least 1,000 time steps for every second of simulation time.
+Once you are done with the input, the simulation will run and a plot will be shown.
+
+
+
 **V1.0:**
 As of today, you can do the following in the program:
 
