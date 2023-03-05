@@ -232,18 +232,19 @@ class SpringMassSystem:
             # Calculate initial length of spring to be plotted
             l = np.linalg.norm(np.array(s[0].conn[0].pos) - np.array(s[0].conn[1].pos))
             # Calculate translation vector of spring
-            T = 0 # TO DO
+            T = s[0].conn[0].pos
             # Calculate rotation angle of spring
             theta = 0 # TO DO
             w = np.linspace(0, l, N)
-            # Set up helix
+            # Setup helix
             helix = np.zeros(N)
             helix[pad1:-pad2] = r * np.sin(2 * np.pi * n * w[pad1:-pad2] / l)
-            # Translate the helix
-            helix += T
-            # Rotate the helix
+            # Translate helix
+            # Rotate helix
             R = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
             x, y = - R @ np.vstack((helix, w))
+            x += T[0]
+            y += T[1]
             plt.scatter(x, y, c = "k", s = 0.4)
 
         """
