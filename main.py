@@ -238,11 +238,12 @@ class SpringMassSystem:
             # Calculate rotation angle of spring (in rad)
             # Spring vector
             spring_vec = np.array(s[0].conn[1].pos) - np.array(s[0].conn[0].pos)
+            spring_vec = np.array([-3.0, 0.0])
             # Unit vector in initial direction of spring
-            init_unit_vec = [0.0, -1.0]
+            init_unit_vec = np.array([0.0, -1.0])
             # Unit vector of spring vector
             spring_unit_vec = spring_vec / np.linalg.norm(spring_vec)
-            theta = -np.pi * np.arccos(np.clip((np.dot(spring_unit_vec, init_unit_vec)), -1.0, 1.0))
+            theta = np.arccos(np.clip((np.dot(spring_unit_vec, init_unit_vec)), -1.0, 1.0))
             w = np.linspace(0, l, N)
             # Setup spring
             spring = np.zeros(N)
@@ -254,6 +255,7 @@ class SpringMassSystem:
             x += T[0]
             y += T[1]
             plt.scatter(x, y, c = "k", s = 0.4)
+            print(f"Angle: {theta * 57.3}")
 
         """
         # Last relevant dot in red
