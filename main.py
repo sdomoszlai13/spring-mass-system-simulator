@@ -232,16 +232,24 @@ class SpringMassSystem:
             # Calculate initial length of spring
             l = np.linalg.norm(np.array(s[0].conn[0].pos) - np.array(s[0].conn[1].pos))
             # Calculate translation vector of spring
+            # T = [0.0, 10.0]
             T = s[0].conn[0].pos
-            # Calculate rotation angle of spring
-            theta = 0 # TO DO
+            # T = [-10.0, 10.0]
+            # Calculate rotation angle of spring (in rad)
+            # Spring vector
+            spring_vec = np.array(s[0].conn[1].pos) - np.array(s[0].conn[0].pos)
+            # Unit vector in initial direction of spring
+            init_unit_vec = [0.0, -1.0]
+            # Unit vector of spring vector
+            spring_unit_vec = spring_vec / np.linalg.norm(spring_vec)
+            theta = -np.pi * np.arccos(np.clip((np.dot(spring_unit_vec, init_unit_vec)), -1.0, 1.0))
             w = np.linspace(0, l, N)
             # Setup spring
-            helix = np.zeros(N)
-            helix[pad1:-pad2] = r * np.sin(2 * np.pi * n * w[pad1:-pad2] / l)
+            spring = np.zeros(N)
+            spring[pad1:-pad2] = r * np.sin(2 * np.pi * n * w[pad1:-pad2] / l)
             # Rotate spring
             R = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
-            x, y = - R @ np.vstack((helix, w))
+            x, y = - R @ np.vstack((spring, w))
             # Translate spring
             x += T[0]
             y += T[1]
