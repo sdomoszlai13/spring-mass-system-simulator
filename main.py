@@ -232,18 +232,30 @@ class SpringMassSystem:
             # Calculate initial length of spring
             l = np.linalg.norm(np.array(s[0].conn[0].pos) - np.array(s[0].conn[1].pos))
             # Calculate translation vector of spring
-            # T = [0.0, 10.0]
             T = s[0].conn[0].pos
-            # T = [-10.0, 10.0]
             # Calculate rotation angle of spring (in rad)
             # Spring vector
-            spring_vec = np.array(s[0].conn[1].pos) - np.array(s[0].conn[0].pos)
-            spring_vec = np.array([-3.0, 0.0])
+            try:
+                spring_vec = np.array(s[0].conn[1].trajectory[1]) - np.array(s[0].conn[0].trajectory[1])
+                print("Two masses")
+            except:
+                try:
+                    spring_vec = np.array(s[0].conn[1].pos) - np.array(s[0].conn[0].trajectory[1])
+                    print("Fixture, mass")
+                except:
+                    try:
+                        spring_vec = np.array(s[0].conn[1].trajectory[1]) - np.array(s[0].conn[0].pos)
+                        print("Mass, fixture")
+                        print(f"Coordinates of mass: {s[0].conn[1].trajectory[1]}")
+                        print(f"Coordinates of fixture: {s[0].conn[0].pos}")
+                    except:
+                        raise ValueError
             # Unit vector in initial direction of spring
             init_unit_vec = np.array([0.0, -1.0])
             # Unit vector of spring vector
             spring_unit_vec = spring_vec / np.linalg.norm(spring_vec)
-            theta = np.arccos(np.clip((np.dot(spring_unit_vec, init_unit_vec)), -1.0, 1.0))
+            # theta = np.arccos(np.clip((np.dot(spring_unit_vec, init_unit_vec)), -1.0, 1.0))
+            theta = np.arctan2(spring_unit_vec[1], spring_unit_vec[0]) - np.arctan2(init_unit_vec[1], init_unit_vec[0])
             w = np.linspace(0, l, N)
             # Setup spring
             spring = np.zeros(N)
