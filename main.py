@@ -232,7 +232,8 @@ class SpringMassSystem:
             # Calculate initial length of spring
             l = np.linalg.norm(np.array(s[0].conn[0].pos) - np.array(s[0].conn[1].pos))
             # Calculate translation vector of spring
-            T = s[0].conn[0].pos
+            # 1) Check which object is higher (larger y-coordinate)         
+            # 2) T = initial position of higher object       
             # Calculate rotation angle of spring (in rad)
             # Spring vector
             try:
