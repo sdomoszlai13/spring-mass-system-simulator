@@ -232,7 +232,7 @@ class SpringMassSystem:
             # Padding for starting point and end point
             pad1, pad2 = 100, 100
             # Calculate translation vector of spring
-            # 1) Check which object is higher (larger y-coordinate)         
+            # 1) Check which object is higher (larger y-coordinate)
             # 2) T = initial position of higher object
             T = np.array([0.0, 1.0])
             # Calculate rotation angle of spring (in rad)
@@ -255,6 +255,10 @@ class SpringMassSystem:
                         print(f"Coordinates of fixture: {s[0].conn[0].pos}")
                     except:
                         raise ValueError
+            if spring_vec[1] > 0:
+                higher_vec = s[0].conn[0]
+            elif spring_vec[1] == 0:
+                higher_vec = s[0].conn[1]
             # Unit vector in initial direction of spring
             init_unit_vec = np.array([0.0, -1.0])
             # Unit vector of spring vector
