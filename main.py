@@ -236,16 +236,19 @@ class SpringMassSystem:
             # 2) T = initial position of higher object
             T = np.array([0.0, 1.0])
             # Calculate rotation angle of spring (in rad)
-            # Spring vector
+            # The try-except blocks iterate over possible combinations of fixtures and massees
             try:
+                # Spring vector
                 spring_vec = np.array(s[0].conn[1].trajectory[1]) - np.array(s[0].conn[0].trajectory[1])
                 print("Two masses")
             except:
                 try:
+                    # Spring vector
                     spring_vec = np.array(s[0].conn[1].pos) - np.array(s[0].conn[0].trajectory[1])
                     print("Fixture, mass")
                 except:
                     try:
+                        # Spring vector
                         spring_vec = np.array(s[0].conn[1].trajectory[1]) - np.array(s[0].conn[0].pos)
                         print("Mass, fixture")
                         print(f"Coordinates of mass: {s[0].conn[1].trajectory[1]}")
