@@ -224,13 +224,13 @@ class SpringMassSystem:
             # Calculate initial length of spring
             l = np.linalg.norm(np.array(s[0].conn[0].pos) - np.array(s[0].conn[1].pos))
             # Spring radius
-            r = 0.2
+            r = 0.1
             # Number of turns
-            n = 3 * int(l)
+            n = 5 * int(l)
             # Number of data points for the spring
-            N = 40 * n
+            N = 100 * n
             # Padding for starting point and end point
-            pad1, pad2 = 100, 100
+            pad1, pad2 = 150, 150
             # Calculate translation vector of spring
             # 1) Check which object is higher (larger y-coordinate)
             # 2) T = initial position of higher object
@@ -277,7 +277,7 @@ class SpringMassSystem:
             # Translate spring
             x += T[0]
             y += T[1]
-            plt.scatter(x, y, c = "k", s = 0.4)
+            plt.scatter(x, y, c = "k", s = 0.01)
             print(f"Angle: {theta * 57.3}")
 
         """
