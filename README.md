@@ -18,21 +18,17 @@ To setup a system of springs and masses, run user_input.py and follow the prompt
 Note: if the time steps are too large, the simulation will become unstable and large errors will occur in the calculations. To prevent this, it is recommended to chosse at least 1,000 time steps for every second of simulation time.
 Once you are done with the input, the simulation will run and a plot will be shown.
 
-
-
+\
+\
 As of today, you can do the following in the program:
 
-**V1.1:**
-
+**V1.1:**\
 Changes:
 * Springs are now plotted at their initial positions
 * Bug fixes
 
 
-
-
-**V1.0:**
-
+**V1.0:**\
 Functionality:
 * set up an arbitrary number of fixtures, masses and springs
 * run the simulation for a desired time with a desired number of time steps (temporary resolution)
