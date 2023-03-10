@@ -20,9 +20,16 @@ Once you are done with the input, the simulation will run and a plot will be sho
 
 
 
-**V1.0:**
 As of today, you can do the following in the program:
 
+**V1.1:**
+Changes:
+* Springs are now plotted at their initial positions
+* Bug fixes
+
+
+**V1.0:**
+Functionality:
 * set up an arbitrary number of fixtures, masses and springs
 * run the simulation for a desired time with a desired number of time steps (temporary resolution)
 * perform a plausibility check by looking at the conservation of energy (known bug: sometimes wrong final point in trajectory and therefore wrong final energy)
