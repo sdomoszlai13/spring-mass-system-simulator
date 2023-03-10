@@ -234,18 +234,22 @@ class SpringMassSystem:
             # Calculate translation vector of spring
             # 1) Check which object is higher (larger y-coordinate)
             # 2) T = initial position of higher object
-            T = np.array([0.0, 1.0])
+            T = np.array([0.0, 0.0])
             # Calculate rotation angle of spring (in rad)
             # The try-except blocks iterate over possible combinations of fixtures and massees
             try:
                 # Spring vector
                 spring_vec = np.array(s[0].conn[1].trajectory[1]) - np.array(s[0].conn[0].trajectory[1])
                 print("Two masses")
+                # T = np.array(s[0].conn[1].trajectory[1])
+                T = np.array(s[0].conn[0].trajectory[1])
             except:
                 try:
                     # Spring vector
                     spring_vec = np.array(s[0].conn[1].pos) - np.array(s[0].conn[0].trajectory[1])
                     print("Fixture, mass")
+                    # T = np.array(s[0].conn[1].pos)
+                    T = np.array(s[0].conn[0].trajectory[1])
                 except:
                     try:
                         # Spring vector
@@ -253,12 +257,10 @@ class SpringMassSystem:
                         print("Mass, fixture")
                         print(f"Coordinates of mass: {s[0].conn[1].trajectory[1]}")
                         print(f"Coordinates of fixture: {s[0].conn[0].pos}")
+                        # T = np.array(s[0].conn[1].trajectory[1])
+                        T = np.array(s[0].conn[0].pos)
                     except:
                         raise ValueError
-            if spring_vec[1] > 0:
-                higher_vec = s[0].conn[0]
-            elif spring_vec[1] == 0:
-                higher_vec = s[0].conn[1]
             # Unit vector in initial direction of spring
             init_unit_vec = np.array([0.0, -1.0])
             # Unit vector of spring vector
