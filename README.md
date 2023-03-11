@@ -20,7 +20,7 @@ Once you are done with the input, the simulation will run and a plot will be sho
 </br>
 </br>
 
-**Change log**
+**CHANGE LOG**
 
 **V1.1:**</br>
 Changes:
