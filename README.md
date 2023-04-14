@@ -1,4 +1,4 @@
-# Spring Mass System Simulation
+# Spring Mass System Simulator
 
 **This progam simulates a system of an arbitrary number of masses, fixtures and springs in a gravity field.**
 
