@@ -36,8 +36,6 @@ class Mass:
     -f: acting force
     -attached: attached objects (mass(es) and/or spring(s))
     -trajectory: trajectory
-    
-    Position and velocity must be provided as a list
     """
 
     def __init__(self, m, x0, y0, vx0, vy0):
